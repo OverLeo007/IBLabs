@@ -40,7 +40,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.encoder.k_coeffs = coeffs[1:]
         self.encoder.iterations = coeffs[0]
         self.label.setText(str(self.encoder))
-        print(self.encoder)
         self.update_text()
 
     def change_mode(self):
