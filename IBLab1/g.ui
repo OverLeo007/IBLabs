@@ -19,7 +19,8 @@
      <item>
       <widget class="QLabel" name="coeffsLabel">
        <property name="text">
-        <string>Введите коэффициенты уравнения смещения через пробел:</string>
+        <string>Введите коэффициенты уравнения смещения через пробел
+(первое число - количество повторных шифрований):</string>
        </property>
       </widget>
      </item>
@@ -27,6 +28,13 @@
       <widget class="QLineEdit" name="coeffsLineEdit">
        <property name="text">
         <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>

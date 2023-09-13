@@ -25,6 +25,10 @@ class Ui_Form(object):
         self.coeffsLineEdit = QtWidgets.QLineEdit(Form)
         self.coeffsLineEdit.setObjectName("coeffsLineEdit")
         self.verticalLayout.addWidget(self.coeffsLineEdit)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.verticalLayout.addWidget(self.label)
         self.textHorizontalLayout = QtWidgets.QHBoxLayout()
         self.textHorizontalLayout.setObjectName("textHorizontalLayout")
         self.leftTextVerticalLayout = QtWidgets.QVBoxLayout()
@@ -58,7 +62,8 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Trithemius cipher"))
-        self.coeffsLabel.setText(_translate("Form", "Введите коэффициенты уравнения смещения через пробел:"))
+        self.coeffsLabel.setText(_translate("Form", "Введите коэффициенты уравнения смещения через пробел\n"
+"(первое число - количество повторных шифрований):"))
         self.coeffsLineEdit.setText(_translate("Form", "0"))
         self.leftTextLabel.setText(_translate("Form", "Открытый текст"))
         self.rightTextLabel.setText(_translate("Form", "Закрытый текст"))

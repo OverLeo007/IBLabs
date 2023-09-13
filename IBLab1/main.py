@@ -21,12 +21,13 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.coeffs_updated.connect(self.update_encoder)
         self.leftTextBrowser.setFocus()
         self.leftTextBrowser.textChanged.connect(self.update_text)
-        print(self.encoder.create_polynomial_str())
         self.button_text = "Режим расшифровки"
         self.is_enc_mode = True
 
+        self.update_encoder([0])
+
     def check_coeffs(self):
-        pattern = r"^-?\d+(\s+-?\d+)*$"
+        pattern = r"^\d+(\s+-?\d+)*$"
         text = self.coeffsLineEdit.text()
         if re.match(pattern, text) is not None:
             self.coeffs_updated.emit(list(map(int, text.split(" "))))
@@ -36,7 +37,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.leftTextBrowser.setReadOnly(True)
 
     def update_encoder(self, coeffs):
-        self.encoder.k_coeffs = coeffs
+        self.encoder.k_coeffs = coeffs[1:]
+        self.encoder.iterations = coeffs[0]
+        self.label.setText(str(self.encoder))
+        print(self.encoder)
         self.update_text()
 
     def change_mode(self):
