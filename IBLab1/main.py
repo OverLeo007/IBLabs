@@ -22,6 +22,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.leftTextBrowser.setFocus()
         self.leftTextBrowser.textChanged.connect(self.update_text)
         print(self.encoder.create_polynomial_str())
+        self.button_text = "Режим расшифровки"
         self.is_enc_mode = True
 
     def check_coeffs(self):
@@ -42,9 +43,15 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         buf_title = self.leftTextLabel.text()
         self.leftTextLabel.setText(self.rightTextLabel.text())
         self.rightTextLabel.setText(buf_title)
+
         buf_text = self.leftTextBrowser.toPlainText()
         self.leftTextBrowser.setText(self.rightTextBrowser.toPlainText())
         self.rightTextBrowser.setText(buf_text)
+
+        buf_button_text = self.changeModePushButton.text()
+        self.changeModePushButton.setText(self.button_text)
+        self.button_text = buf_button_text
+
         self.is_enc_mode = not self.is_enc_mode
 
     def update_text(self):
