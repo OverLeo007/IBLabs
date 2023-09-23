@@ -15,30 +15,20 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.coeffsLineEdit.textChanged.connect(self.check_coeffs)
+
+        self.keyLineEdit.textChanged.connect(self.update_encoder)
+
         self.changeModePushButton.clicked.connect(self.change_mode)
-        self.encoder = Trithemius(rus_alph + eng_alph + nums_syms, 0)
-        self.coeffs_updated.connect(self.update_encoder)
+        self.encoder = Trithemius(rus_alph + eng_alph + nums_syms, "0")
         self.leftTextBrowser.setFocus()
         self.leftTextBrowser.textChanged.connect(self.update_text)
         self.button_text = "Режим расшифровки"
         self.is_enc_mode = True
+        self.update_encoder()
 
-        self.update_encoder([0])
 
-    def check_coeffs(self):
-        pattern = r"^\d+(\s+-?\d+)*$"
-        text = self.coeffsLineEdit.text()
-        if re.match(pattern, text) is not None:
-            self.coeffs_updated.emit(list(map(int, text.split(" "))))
-            self.leftTextBrowser.setReadOnly(False)
-
-        else:
-            self.leftTextBrowser.setReadOnly(True)
-
-    def update_encoder(self, coeffs):
-        self.encoder.k_coeffs = coeffs[1:]
-        self.encoder.iterations = coeffs[0]
+    def update_encoder(self):
+        self.encoder.upd_key(self.keyLineEdit.text())
         self.label.setText(str(self.encoder))
         self.update_text()
 

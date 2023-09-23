@@ -1,14 +1,28 @@
+import hashlib
+
 eng_alph = "abcdefghijklmnopqrstuvwxyz"
 rus_alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 nums_syms = "1234567890 .,"
 
 
 class Trithemius:
-    def __init__(self, alph, *k_coeffs, iterations=1):
+    def __init__(self, alph, key):
+        self.k_coeffs = None
+        self.key_hash = None
+        self.iterations = None
         self.alph = alph
         self.a_len = len(self.alph)
-        self.iterations = iterations
-        self.k_coeffs = k_coeffs
+        self.upd_key(key)
+        
+    def upd_key(self, key):
+        hashed_key = hashlib.md5(key.encode('utf-8')).hexdigest()
+        hexed = [hashed_key[i:i + 4] for i in range(0, len(hashed_key), 4)]
+        self.key_hash = hashed_key
+        for x, val in enumerate(hexed):
+            hexed[x] = int('-1' if int(val[:2], 16) % 2 == 1 else '1') * int(val[2:],
+                                                                             16)
+        self.iterations = abs(hexed[0])
+        self.k_coeffs = hexed[1:]
 
     @staticmethod
     def circular_shift(coeffs, is_left=False):
@@ -33,6 +47,42 @@ class Trithemius:
             res += coeff * (x_value ** power)
         return res
 
+    def gronfeld(self, text, is_decrypt=False):
+        key = [int(x, 16) for x in self.key_hash]
+        while len(key) < len(text):
+            key.extend(key)
+        key = key[:len(text)]
+
+        return "".join([
+            self.alph[
+                (
+                        self.alph.index(char) +
+                        (-1) ** is_decrypt * (k_val % self.a_len)
+                ) % self.a_len
+                ]
+            if char in self.alph else char
+            for k_val, char in zip(key, text)
+        ])
+
+    def permute(self, text, is_decrypt=False):
+        text_by_8 = [list(text[i: i + 8]) for i in range(0, len(text), 8)]
+        by_8 = [bool(int(self.key_hash[i:i + 4], 16) % 2) for i in
+                range(0, len(self.key_hash), 4)]
+
+        for eight_gramm in text_by_8:
+            cropped_key = by_8[:len(eight_gramm)]
+            for_iterable = range(len(cropped_key) - 1, -1, -1) \
+                if is_decrypt else range(len(cropped_key))
+            for i in for_iterable:
+                if cropped_key[i]:
+                    next_idx = (i + 1) % len(eight_gramm)
+                    eight_gramm[i], eight_gramm[next_idx] = \
+                        eight_gramm[next_idx], eight_gramm[i]
+
+        return "".join([
+            "".join([char for char in eight_gramm]) for eight_gramm in text_by_8
+        ])
+
     def encrypt(self, text):
         coeffs_iterator = self.circular_shift(self.k_coeffs)
         cur_text = text
@@ -48,24 +98,34 @@ class Trithemius:
                 if sym in self.alph else sym
                 for i, sym in enumerate(cur_text.lower())
             ])
-        return cur_text
+
+        substituted_text = self.gronfeld(cur_text, is_decrypt=False)
+        permuted_text = self.permute(substituted_text, is_decrypt=False)
+
+        return permuted_text
 
     def decrypt(self, text):
+
+        unpermuted_text = self.permute(text, is_decrypt=True)
+        unsubstituted_text = self.gronfeld(unpermuted_text, is_decrypt=True)
+        cur_text = unsubstituted_text
+
         coeffs_iterator = self.circular_shift(
             self.circular_shift_by_iter(self.iterations - 1), is_left=True
         )
-        cur_text = text
         for i in range(self.iterations):
             cur_coeffs = next(coeffs_iterator)
             cur_text = ''.join([
                 self.alph[
-                    (self.alph.index(sym) -
-                     self.solve_polynomial(i, cur_coeffs)
-                     ) % self.a_len
+                    (
+                            self.alph.index(sym) -
+                            self.solve_polynomial(i, cur_coeffs)
+                    ) % self.a_len
                     ]
                 if sym in self.alph else sym
                 for i, sym in enumerate(cur_text.lower())
             ])
+
         return cur_text
 
     def create_polynomial_str(self):
@@ -101,7 +161,8 @@ class Trithemius:
 
 
 if __name__ == '__main__':
-    trit = Trithemius(rus_alph + eng_alph + nums_syms, 2, 5, 3, iterations=7)
+    alph = eng_alph + rus_alph + nums_syms
+    trit = Trithemius(alph, "amobus123a+")
     o_text = "Съешь же ещё этих мягких французских булок, да выпей чаю."
     c_txt = trit.encrypt(o_text)
     op_text = trit.decrypt(c_txt)

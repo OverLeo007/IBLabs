@@ -17,15 +17,14 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="coeffsLabel">
+      <widget class="QLabel" name="keyLabel">
        <property name="text">
-        <string>Введите коэффициенты уравнения смещения через пробел
-(первое число - количество повторных шифрований):</string>
+        <string>Введите ключ (любые символы)</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="coeffsLineEdit">
+      <widget class="QLineEdit" name="keyLineEdit">
        <property name="text">
         <string>0</string>
        </property>
@@ -52,6 +51,9 @@
          <item>
           <widget class="QTextBrowser" name="leftTextBrowser">
            <property name="readOnly">
+            <bool>false</bool>
+           </property>
+           <property name="acceptRichText">
             <bool>false</bool>
            </property>
           </widget>
