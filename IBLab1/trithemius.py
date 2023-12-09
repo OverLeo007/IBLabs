@@ -13,7 +13,7 @@ class Trithemius:
         self.alph = alph
         self.a_len = len(self.alph)
         self.upd_key(key)
-        
+
     def upd_key(self, key):
         hashed_key = hashlib.md5(key.encode('utf-8')).hexdigest()
         hexed = [hashed_key[i:i + 4] for i in range(0, len(hashed_key), 4)]
@@ -82,6 +82,27 @@ class Trithemius:
         return "".join([
             "".join([char for char in eight_gramm]) for eight_gramm in text_by_8
         ])
+
+    def permute2(self, text):
+
+        text_4gramms = [
+            tuple([list(text[i: i + 4]), list(text[i + 4: i + 8])])
+            for i in range(0, len(text), 8)
+        ]
+        hash_4gramms = [
+            list(map(lambda x: bool(int(x, 16) % 2), self.key_hash[i: i + 4]))
+            for i in range(0, len(self.key_hash), 4)
+        ]
+
+        for (fst, snd), hash_gramm in zip(text_4gramms, hash_4gramms):
+            for i in range(len(min([fst, snd], key=len))):
+                if hash_gramm[i]:
+                    fst[i], snd[i] = snd[i], fst[i]
+        flattened_list = []
+        for sublist in text_4gramms:
+            for item in sublist:
+                flattened_list.extend(item)
+        return "".join(flattened_list)
 
     def encrypt(self, text):
         coeffs_iterator = self.circular_shift(self.k_coeffs)
@@ -164,9 +185,12 @@ if __name__ == '__main__':
     alph = eng_alph + rus_alph + nums_syms
     trit = Trithemius(alph, "amobus123a+")
     o_text = "Съешь же ещё этих мягких французских булок, да выпей чаю."
-    c_txt = trit.encrypt(o_text)
-    op_text = trit.decrypt(c_txt)
-    print(o_text)
-    print(c_txt)
-    print(op_text)
-    print(trit)
+    res = trit.permute2(o_text)
+    print(res)
+    print(trit.permute2(res))
+    # c_txt = trit.encrypt(o_text)
+    # op_text = trit.decrypt(c_txt)
+    # print(o_text)
+    # print(c_txt)
+    # print(op_text)
+    # print(trit)
