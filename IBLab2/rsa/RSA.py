@@ -251,29 +251,27 @@ class RSA:
         :param inp_bytes: Входные данные в виде байтов.
         :return: Зашифрованные данные.
         """
-        padding_len = self.n_byte_len - (len(inp_bytes) % self.n_byte_len)
+        padding_len = self.n_byte_len - (
+                len(inp_bytes) % self.n_byte_len)
         padded_inp = inp_bytes + bytes([padding_len]) * padding_len
 
         blocks = [
-            padded_inp[i:i + self.n_byte_len]
+            int(powmod(
+                self.from_bytes(padded_inp[i:i + self.n_byte_len]),
+                self.s,
+                self.N
+            ))
             for i in range(0, len(padded_inp), self.n_byte_len)
         ]
-        blocks = list(map(self.from_bytes, blocks))
 
-        res = [
-            int(powmod(block, self.s, self.N))
-            for block in blocks
-        ]
-
-        block_byte_len = (len(format(max(res), 'b'))) // 8 + 1
-        res = list(
-            map(
-                lambda x: self.to_bytes(x, block_byte_len),
-                res
-            )
-        )
-        res.insert(0, self.to_bytes(block_byte_len, 4))
-        return b''.join(res)
+        block_byte_len = (len(format(max(blocks), 'b'))) // 8 + 1
+        return b''.join(
+            [self.to_bytes(block_byte_len, 4)] + list(
+                map(
+                    lambda x: self.to_bytes(x, block_byte_len),
+                    blocks
+                )
+            ))
 
     def decrypt(self, _input: Union[bytes, str]) -> bytes:
         """
@@ -307,7 +305,6 @@ class RSA:
             )
             res.append(dec_block)
         res[-1] = self.remove_last_bytes(res[-1])
-        # return b''.join(res).rstrip(b'\x00')
         return b''.join(res)
 
     def save_keys(self, filename: str) -> None:
@@ -367,6 +364,7 @@ def test_mult(runs):
         inp_bytes = file.read()
     fail = 0
     rsa = RSA()
+    # rsa = RSA(n_len=200)
     for i in range(runs):
         enc = rsa.encrypt(inp_bytes)
         dec = rsa.decrypt(enc)
@@ -386,7 +384,8 @@ def test1():
     with open(inp_file_path, "rb") as file:
         inp_bytes = file.read()
 
-    rsa = RSA()
+    rsa = RSA(n_len=28)
+    print(rsa.N)
     enc = rsa.encrypt(RSA.file_folder + filename)
     with open(enc_file_path, "wb") as file:
         file.write(enc)
@@ -403,5 +402,5 @@ def test1():
 
 if __name__ == '__main__':
     runs = 10000
-    # test_mult(runs)
-    test1()
+    test_mult(runs)
+    # test1()

@@ -26,6 +26,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="encryptFilesButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Зашифровать</string>
         </property>

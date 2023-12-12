@@ -75,7 +75,37 @@ class DynamicTestsMeta(type):
                         sep="\n"
                     )
 
+            def test_method_unique_rsa(self, files=files):
+                rsa = RSA()
+                for filename in files:
+                    inp_filepath = DynamicTestsMeta.input_folder + filename
+                    enc_filepath = DynamicTestsMeta.encoded_folder \
+                                   + filename + ".rsa"
+                    dec_filepath = DynamicTestsMeta.decoded_folder \
+                                   + filename.replace(".", ".dec.")
+
+                    enc = rsa.encrypt(inp_filepath)
+                    save_file(enc_filepath, enc)
+
+                    dec = rsa.decrypt(enc_filepath)
+                    save_file(dec_filepath, dec)
+
+                    self.assertEqual(file_sha256(inp_filepath),
+                                     file_sha256(dec_filepath))
+                    self.assertEqual(file_crc32(inp_filepath),
+                                     file_crc32(dec_filepath))
+                    print(
+                        filename,
+                        f"inp sha256: {file_sha256(inp_filepath)}",
+                        f"out sha256: {file_sha256(dec_filepath)}",
+                        f"inp crc: {file_crc32(inp_filepath)}",
+                        f"out crc: {file_crc32(dec_filepath)}",
+                        "=" * 76,
+                        sep="\n"
+                    )
+
             dct[method_name] = test_method
+            dct[method_name + "_unique_rsa"] = test_method_unique_rsa
 
         return super(DynamicTestsMeta, mcs).__new__(mcs, name, bases, dct)
 

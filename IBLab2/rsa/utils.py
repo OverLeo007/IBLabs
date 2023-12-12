@@ -12,19 +12,6 @@ class Testing:
         Класс, предоставляющий методы для генерации базиса
         и выполнения теста Миллера-Рабина для проверки простоты числа.
         """
-        @staticmethod
-        def generate_basis(n: int) -> list:
-            """
-            Генерирует базис простых чисел до заданного числа n.
-
-            :param n: Верхний предел для генерации базиса.
-            :return: Список простых чисел в базисе.
-            """
-            basis = [True] * n
-            for i in range(3, int(n ** 0.5) + 1, 2):
-                if basis[i]:
-                    basis[i * i::2 * i] = [False] * ((n - i * i - 1) // (2 * i) + 1)
-            return [2] + [i for i in range(3, n, 2) if basis[i]]
 
         @staticmethod
         def miller_rabin(n: int, b: int) -> bool:
@@ -126,7 +113,8 @@ class Testing:
         @staticmethod
         def strong_lucas_test(n: int, D: int, P: int) -> bool:
             """
-            Выполняет сильное тестирование Лукаса для проверки простоты числа n.
+            Выполняет тестирование Лукаса
+            для проверки сильной псевдопростоты числа n.
 
             :param n: Проверяемое число.
             :param D: Параметр D в последовательности Лукаса.
@@ -155,8 +143,8 @@ class Testing:
         @staticmethod
         def strong_lucas_selfridge(n: int) -> bool:
             """
-            Выполняет сильное тестирование Лукаса-Селфриджа
-            для проверки простоты числа n.
+            Выполняет тестирование Лукаса-Селфриджа
+            для проверки сильной псевдопростоты числа n.
 
             :param n: Проверяемое число.
             :return: True, если число, вероятно, простое; False, если составное.
@@ -209,6 +197,20 @@ class Testing:
             return Testing.BPSW.strong_lucas_selfridge(n)
 
     @staticmethod
+    def generate_basis(n: int) -> list:
+        """
+        Генерирует базис простых чисел до заданного числа n.
+
+        :param n: Верхний предел для генерации базиса.
+        :return: Список простых чисел в базисе.
+        """
+        basis = [True] * n
+        for i in range(3, int(n ** 0.5) + 1, 2):
+            if basis[i]:
+                basis[i * i::2 * i] = [False] * ((n - i * i - 1) // (2 * i) + 1)
+        return [2] + [i for i in range(3, n, 2) if basis[i]]
+
+    @staticmethod
     def fermat(n: int, k: int) -> bool:
         """
         Выполняет тест Ферма для проверки простоты числа n.
@@ -250,7 +252,7 @@ class PrimesSingleton:
     """
     Класс, предоставляющий единственное значение для базиса, для каждого вызова.
     """
-    primes = Testing.MillerRabin.generate_basis(1000)
+    primes = Testing.generate_basis(1000)
 
 
 class Utils:
