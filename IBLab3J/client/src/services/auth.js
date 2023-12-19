@@ -55,13 +55,10 @@ export default class Auth {
 
     async accessCheck(current_path) {
         try {
-            const response = await axios.post(`${ROOT_URL}/auth/verify`, {
+            await axios.post(`${ROOT_URL}/auth/verify`, {
                 token: encrypt(localStorage.getItem('token'), this.K),
                 sessionId: localStorage.getItem('sessionId') === null ? 'null' : localStorage.getItem('sessionId'),
             });
-
-            console.log(response.data);
-
             if (current_path === '/register' || current_path === '/login') {
                 await router.push('/');
             }

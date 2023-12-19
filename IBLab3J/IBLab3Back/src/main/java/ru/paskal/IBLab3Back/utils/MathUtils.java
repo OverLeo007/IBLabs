@@ -7,12 +7,28 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Утилитарный класс для математических операций.
+ */
 public class MathUtils {
 
+  /**
+   * Метод для генерации случайного BigInteger в указанном диапазоне.
+   *
+   * @param min Минимальное значение.
+   * @param max Максимальное значение.
+   * @return Сгенерированный случайный BigInteger.
+   */
   public static BigInteger generateRandomBigInteger(BigInteger min, BigInteger max) {
     return new BigInteger(max.bitLength(), ThreadLocalRandom.current()).add(min);
   }
 
+  /**
+   * Метод для проверки, является ли число простым.
+   *
+   * @param n Проверяемое число.
+   * @return true, если число простое, иначе false.
+   */
   public static boolean isPrime(BigInteger n) {
       if (n.compareTo(BigInteger.ONE) <= 0) {
         return false;
@@ -39,6 +55,12 @@ public class MathUtils {
       return true;
     }
 
+  /**
+   * Метод для нахождения простых множителей числа и добавления их в множество.
+   *
+   * @param s Множество для хранения простых множителей.
+   * @param n Число, для которого находятся простые множители.
+   */
     public static void findPrimeFactors(Set<BigInteger> s, BigInteger n) {
       while (n.mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
         s.add(BigInteger.valueOf(2));
@@ -57,6 +79,12 @@ public class MathUtils {
       }
     }
 
+  /**
+   * Метод для нахождения первообразного корня по модулю простого числа.
+   *
+   * @param n Простое число, для которого находится первообразный корень.
+   * @return Первообразный корень по модулю простого числа.
+   */
     public static BigInteger primitiveRoot(BigInteger n) {
       Set<BigInteger> s = new HashSet<>();
 
@@ -84,12 +112,23 @@ public class MathUtils {
       return BigInteger.valueOf(-1);
     }
 
+  /**
+   * Метод для получения хэш-значения BigInteger.
+   *
+   * @param number Число, для которого получается хэш-значение.
+   * @return Хэш-значение числа в виде массива байт.
+   */
   public static byte[] getHash(BigInteger number) {
     String numberStr = number.toString();
     return getHash(numberStr);
   }
 
-
+  /**
+   * Метод для получения хэш-значения строки.
+   *
+   * @param value Строка, для которой получается хэш-значение.
+   * @return Хэш-значение строки в виде массива байт.
+   */
   public static byte[] getHash(String value) {
     byte[] numberBytes = value.getBytes();
 
@@ -103,12 +142,14 @@ public class MathUtils {
     }
   }
 
+  /**
+   * Метод для преобразования массива байт в шестнадцатеричное представление.
+   *
+   * @param bytes Массив байт.
+   * @return Шестнадцатеричное представление массива байт в виде строки.
+   */
   public static String bytesToHex(byte[] bytes) {
     BigInteger bigInt = new BigInteger(1, bytes);
     return bigInt.toString(16);
   }
-
-
-
-
 }

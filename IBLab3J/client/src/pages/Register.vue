@@ -86,7 +86,7 @@ export default {
           <div class="row">
             <button
                 class="col s12 m4 l4 btn waves-effect waves-light green"
-                type="submit"
+                type="button"
                 @click="submit_user()"
                 name="action">
               Registration

@@ -3,8 +3,18 @@ package ru.paskal.IBLab3Back.security.tests;
 import java.math.BigInteger;
 import java.util.Random;
 
+/**
+ * Класс, представляющий тест Миллера-Рабина для проверки числа на простоту.
+ */
 public class MillerRabinTest {
 
+  /**
+   * Метод для выполнения теста Миллера-Рабина.
+   *
+   * @param n           Число, которое требуется проверить на простоту.
+   * @param testCount   Количество итераций теста.
+   * @return {@code true}, если число вероятно простое, {@code false} в противном случае.
+   */
   public static boolean run(BigInteger n, int testCount) {
     if (n.equals(BigInteger.valueOf(2))) {
       return true;

@@ -1,25 +1,37 @@
 package ru.paskal.IBLab3Back.dto.instruments;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import ru.paskal.IBLab3Back.dto.auth.AuthVerifyDto;
 
-@Data
-public class InstrumentCreateDto {
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
+public class InstrumentCreateDto extends AuthVerifyDto {
 
-  @Size(min = 3, max = 30, message = "len of name is not between 3 and 30")
   private String name;
-
-  @Size(min = 3, max = 30, message = "len of type is not between 3 and 30")
   private String type;
-
-  @Size(min = 3, max = 30, message = "len of brand is not between 3 and 30")
   private String brand;
+  private String price;
+  private String quantity;
 
-  @Min(value = 1, message = "we cant sell it for free!")
-  private float price;
+  public InstrumentCreateDto(String sessionId,
+      String token,
+      String name,
+      String type,
+      String brand,
+      String price,
+      String quantity) {
+    super(sessionId, token);
+    this.name = name;
+    this.type = type;
+    this.brand = brand;
+    this.price = price;
+    this.quantity = quantity;
+  }
 
-  @Min(value = 0, message = "What's on your mind?")
-  private int quantity;
 
 }

@@ -4,8 +4,18 @@ import static ru.paskal.IBLab3Back.utils.MathUtils.generateRandomBigInteger;
 
 import java.math.BigInteger;
 
+/**
+ * Класс, представляющий тест Ферма для проверки числа на простоту.
+ */
 public class FermatTest {
 
+  /**
+   * Метод для выполнения теста Ферма.
+   *
+   * @param n Число, которое требуется проверить на простоту.
+   * @param k Количество итераций теста.
+   * @return {@code true}, если число вероятно простое, {@code false} в противном случае.
+   */
   public static boolean run(BigInteger n, int k) {
     if (n.equals(BigInteger.ONE) || n.equals(BigInteger.valueOf(4))) {
       return false;
@@ -24,7 +34,4 @@ public class FermatTest {
       return true;
     }
   }
-
-
-
 }

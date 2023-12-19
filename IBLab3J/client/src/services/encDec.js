@@ -11,21 +11,12 @@ export function encrypt(message, key) {
 }
 
 
-export function decryptData(data, key) {
-    const res = [];
-
-    for (const obj of data) {
-        res.push(decryptJson(obj, key));
-    }
-
-    return res;
+export function decryptJsonList(data, dec_key) {
+    return data.map(obj => decryptJson(obj, dec_key));
 }
 
-export function decryptJson(data, key) {
-    const decryptedData = {};
-
-    for (const [key, value] of Object.entries(data)) {
-        decryptedData[key] = decrypt(value, key);
-    }
-    return decryptedData
+export function decryptJson(data, dec_key) {
+    return Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [key, decrypt(value, dec_key)])
+    );
 }
