@@ -163,11 +163,9 @@ public class UserService {
     String password = decrypt(authLogDto.getPassword(), key);
     password = bytesToHex(getHash(password));
 
-    Optional<User> optionalUser = repository.findByUsernameAndPassword(username, password);
-    if (optionalUser.isEmpty()) {
-      throw new UserNotFoundException(username);
-    }
-    User user = optionalUser.get();
+    User user = repository
+        .findByUsernameAndPassword(username, password)
+        .orElseThrow(() -> new UserNotFoundException(username));
     String token = UUID.randomUUID().toString();
 
 

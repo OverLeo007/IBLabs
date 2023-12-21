@@ -71,6 +71,4 @@ export default class Auth {
             }
         }
     }
-
-
 }
